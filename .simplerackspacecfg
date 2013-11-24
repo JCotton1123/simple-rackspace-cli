@@ -1,0 +1,4 @@
+[default]
+identity_uri = https://identity.api.rackspacecloud.com/v2.0/
+username = <username>
+api_key = <api-key>
