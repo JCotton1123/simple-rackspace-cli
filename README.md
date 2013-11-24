@@ -12,7 +12,7 @@ This script makes working with the Rackspace API easier without abstracting away
 
 ## Usage
 
-This script relies on a configuration file, .simplerackspacecfg, to be present in the directory this script is launched. This configuration file must contain the identity api endpoint and your username and api key. A sample .simplerackspacecfg file is available in this repo.
+This script relies on a configuration file that must contain the identity api endpoint and your username and api key. A sample simplerackspacecfg file is provided with this code. If you do not supply the path to this file via the cli it will try to load *.simplerackspacecfg* from within your current working directory.
 
 Calling the script is pretty straightforward...
 
@@ -31,32 +31,19 @@ It will return the output, typically JSON, and set the exit code based on the ht
 
 ### Examples
 
-Detailed listing of Next-Gen servers within the DFW region
+*Create a Next-Gen server*
 
 ```
-./simple-rackspace-cli.php -s cloudServersOpenStack -r DFW -u /servers/details
-```
-
-Create a Next-Gen server
-
-```
-./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d\
+$ ./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d\
 '{
     "server" : {
         "name" : "api-test-server-1",
         "imageRef" : "3afe97b2-26dc-49c5-a2cc-a2fc8d80c001",
         "flavorRef" : "2"
     }
-}'
-```
-
-*OR*
-
-```
-./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d < create-server.json
-```
-
-```
+}' > /dev/null
+$ echo $?
+0
 $ ./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d < create-server.json 
 {"server": {"OS-DCF:diskConfig": "AUTO", "id": "35379c68-d723-4f1f-84ed-39ed93cc09c8", "links": [{"href": "https://dfw.servers.api.rackspacecloud.com/v2/11111/servers/35379c68-d723-4f1f-84ed-39ed93cc09c8", "rel": "self"}, {"href": "https://dfw.servers.api.rackspacecloud.com/11111/servers/35379c68-d723-4f1f-84ed-39ed93cc09c8", "rel": "bookmark"}], "adminPass": "Mumb3f5vpPrX"}}
 $ echo $?
@@ -67,10 +54,35 @@ $ echo $?
 4
 ```
 
+### Services
+
+* cloudFiles
+* cloudFilesCDN
+* cloudDatabases
+* cloudLoadBalancers
+* cloudBlockStorage
+* cloudServersOpenStack (Next gen servers)
+* cloudDNS
+* cloudMonitoring
+* autoscale
+* cloudBackup
+* cloudServers (First gen servers)
+
+### Regions
+
+* ORD
+* DFW
+* IAD
+* SYD
+* HKG
+
 ## Why ???
 
 * Learn how the Rackspace, and to some degree OpenStack, API works.
 * Minimize dependencies (since it is meant as a CLI tool)
 * Minimize abstraction
 
+## Known issues
+
+* Some of the services do not require a region. This will require a small amount of refactoring to fix.
 
