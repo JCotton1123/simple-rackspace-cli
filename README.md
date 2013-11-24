@@ -3,7 +3,7 @@ simple-rackspace-cli
 
 ## Description
 
-This script makes working with the Rackspace API easier. It abstracts away the details of obtaining an auth token, looking up the appropriate URL for the specified service and region, and calling the API.
+This script makes working with the Rackspace API easier without abstracting away too much. It abstracts away the details of obtaining an auth token, looking up the appropriate URL for the specified service and region, and calling the API.
 
 ## Usage
 
