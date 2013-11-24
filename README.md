@@ -48,12 +48,23 @@ Create a Next-Gen server
         "flavorRef" : "2"
     }
 }'
+```
 
-OR 
+*OR*
 
+```
 ./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d < create-server.json
+```
 
+```
+$ ./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d < create-server.json 
 {"server": {"OS-DCF:diskConfig": "AUTO", "id": "35379c68-d723-4f1f-84ed-39ed93cc09c8", "links": [{"href": "https://dfw.servers.api.rackspacecloud.com/v2/11111/servers/35379c68-d723-4f1f-84ed-39ed93cc09c8", "rel": "self"}, {"href": "https://dfw.servers.api.rackspacecloud.com/11111/servers/35379c68-d723-4f1f-84ed-39ed93cc09c8", "rel": "bookmark"}], "adminPass": "Mumb3f5vpPrX"}}
+$ echo $?
+0
+$ ./simple-rackspace-cli.php -s cloudServersOpenStack -u /servers -m POST -d < /dev/null
+{"badRequest": {"message": "The server could not comply with the request since it is either malformed or otherwise incorrect.", "code": 400}}
+$ echo $?
+4
 ```
 
 ## Why ???
