@@ -5,6 +5,11 @@ simple-rackspace-cli
 
 This script makes working with the Rackspace API easier without abstracting away too much. It abstracts away the details of obtaining an auth token, looking up the appropriate URL for the specified service and region, and calling the API.
 
+## Requirements
+
+* PHP >= 5.3
+* PHP-curl
+
 ## Usage
 
 This script relies on a configuration file, .simplerackspacecfg, to be present in the directory this script is launched. This configuration file must contain the identity api endpoint and your username and api key. A sample .simplerackspacecfg file is available in this repo.
