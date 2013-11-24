@@ -3,7 +3,12 @@ simple-rackspace-cli
 
 ## Description
 
-This script makes working with the Rackspace API easier without abstracting away too much. It abstracts away the details of obtaining an auth token, looking up the appropriate URL for the specified service and region, and calling the API.
+A script for working with the Rackspace API at the command-line.
+
+Goals: 
+
+* Minimize depedencies - as you can see from the requirements it couldn't get much leaner unless it was written in bash (ugly). 
+* Minimize abstraction - it only abstracts away the details of obtaining an auth token, looking up the appropriate URL for the specified service and region, and the details of making the HTTP requests.
 
 ## Requirements
 
@@ -75,12 +80,6 @@ $ echo $?
 * IAD
 * SYD
 * HKG
-
-## Why ???
-
-* Learn how the Rackspace, and to some degree OpenStack, API works.
-* Minimize dependencies (since it is meant as a CLI tool)
-* Minimize abstraction
 
 ## Known issues
 
