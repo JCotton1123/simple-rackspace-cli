@@ -12,7 +12,7 @@ This script makes working with the Rackspace API easier without abstracting away
 
 ## Usage
 
-This script relies on a configuration file that must contain the identity api endpoint and your username and api key. A sample simplerackspacecfg file is provided with this code. If you do not supply the path to this file via the cli it will try to load *.simplerackspacecfg* from within your current working directory.
+This script relies on a configuration file that must contain the identity api endpoint and your username and api key. A sample config file is provided with this code. If you do not supply a config file, it will try to load *.simplerackspacecfg* from within your current working directory.
 
 Calling the script is pretty straightforward...
 
