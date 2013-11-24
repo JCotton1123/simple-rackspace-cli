@@ -4,24 +4,19 @@
 define('DEBUG', false);
 
 ## Main
-$config = array();
-try {
-    $config = parse_input_and_config($config);
-}
-catch(Exception $e){
-    echo $e->getMessage() . "\n";
+
+$config = get_config();
+if(isset($config['help'])){
     usage();
     exit(1);
 }
+list($error, $error_msg) = validate_config($config);
+if($error){
+    echo $error_msg . "\n";
+    exit(1);
+}
 
-$identity_uri = $config['identity_uri'];
-$username = $config['username'];
-$api_key = $config['api_key'];
-$service = $config['service'];
-$region = $config['region'];
-$uri = $config['uri'];
-$method = $config['method'];
-$data = isset($config['data']) ? $config['data'] : false;
+extract($config);
 
 $auth_info = get_auth_info($identity_uri, $username, $api_key);
 $token = extract_token($auth_info);
@@ -44,13 +39,14 @@ exit(map_http_status_to_exit_code($http_status));
 
 function usage(){
     $script_name = basename(__FILE__);
-    echo "usage: {$script_name} [-s service] [-r region] [-u uri] [-m http-method] [-d data]\n";
+    echo "usage: {$script_name} [-c config-file] [-s service] [-r region] [-u uri] [-m http-method] [-d data]\n";
     echo "options:\n";
-    echo " -s\tThe service you're contacting. Ex: cloudFiles\n";
-    echo " -r\tThe region you would like to execute this operation against. Ex: DFW\n";
-    echo " -u\tThe *relative* URI for the endpoint you're trying to reach. Ex: /loadbalancers\n";
-    echo " -m\tThe HTTP method, GET or POST\n";
-    echo " -d\tAn optional block of data that will be sent with your request. This parameter should be a valid JSON string\n";
+    echo " -c\tThe path to a simple-rackspace-cli config file.\n";
+    echo " -s\tThe service you're contacting.\n";
+    echo " -r\tThe region you would like to execute this operation within.\n";
+    echo " -u\tThe *relative* URI for the endpoint you're trying to reach.\n";
+    echo " -m\tThe HTTP method.\n";
+    echo " -d\tAn optional block of data, usually JSON, supplied as an argument value or piped in, that will be sent with your request.\n";
 }
 
 function map_http_status_to_exit_code($status){
@@ -64,24 +60,6 @@ function map_http_status_to_exit_code($status){
         return 5;
 }
 
-function parse_input_and_config(){
-
-    $default_config = array(
-        "method" => "GET",
-        "region" => "DFW"
-    );
-
-    $raw_cli_config = getopt("s:r:u:m:d:");
-    $cli_config = convert_short_params_to_long($raw_cli_config);
-
-    $file_config = get_file_config('.simplerackspacecfg', 'default');
-
-    $config = array_merge($default_config, $file_config, $cli_config);
-    validate_config($config);
-
-    return $config;
-}
-
 function validate_config($config){
 
     $required_params = array(
@@ -91,12 +69,44 @@ function validate_config($config){
     $supplied_params = array_keys($config);
     $missing_params = array_diff($required_params, $supplied_params);
     if(count($missing_params) > 0)
-        throw new Exception("The following required parameters is missing: " . implode(", ",$missing_params));
+        return array(true, "One or more required parameters is missing."); 
+
+    return array(false, "");
+}
+
+function get_config(){
+
+    $default_config = array(
+        "config_file" => ".simplerackspacecfg",
+        "method" => "GET",
+        "region" => "DFW",
+        "data" => false
+    );
+
+    $cli_config = get_cli_configurations();
+    if(isset($cli_config['data']) && empty($cli_config['data'])){
+        $cli_config['data'] = read_from_stdin();
+    }
+
+    $config_file = isset($cli_config['config_file']) ?
+        $cli_config['config_file'] : $default_config['config_file'];
+    $file_config = get_file_configurations($config_file, 'default');
+
+    $config = array_merge($default_config, $file_config, $cli_config);
+    return $config;
+}
+
+function get_cli_configurations(){
+
+    $raw_cli_config = getopt("hc:s:r:u:m:d::");
+    return convert_short_params_to_long($raw_cli_config);
 }
 
 function convert_short_params_to_long($config){
 
     $short_to_long = array(
+        "h" => "help",
+        "c" => "config_file",
         "s" => "service",
         "r" => "region",
         "u" => "uri",
@@ -114,9 +124,13 @@ function convert_short_params_to_long($config){
     return $config;
 }
 
-function get_file_config($filename, $section){
+function read_from_stdin(){
+    return stream_get_contents(STDIN);
+}
 
-    $config = parse_ini_file($filename, true);
+function get_file_configurations($file, $section){
+
+    $config = parse_ini_file($file, true);
     if(!isset($config[$section]))
         throw new Exception('Section does not exist');
 
