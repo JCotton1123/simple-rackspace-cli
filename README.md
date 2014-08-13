@@ -1,6 +1,8 @@
 simple-rackspace-cli
 ====================
 
+CLI tool for working with the Rackspace CLI
+
 ## Description
 
 A script for working with the Rackspace API at the command-line.
